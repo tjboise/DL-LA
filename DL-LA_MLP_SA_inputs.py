@@ -8,16 +8,16 @@ import logging
 
 
 # Specify the raw data set to be analyzed (e.g.)
-traceset = 'FPGA_PRESENT_RANDOMIZED_CLOCK'
+traceset = 'powerTraces'
 traceconfig = TraceConfig()
 tracelength = traceconfig.getnrpoints(traceset)
 
 
 # Define the training and validation parameters
-nrtrain = 5000
-nrval = 10000
-nrepochs = 50
-batchsize = 2000
+nrtrain = 4000
+nrval = 2000
+nrepochs = 20
+batchsize = 200
 if nrtrain > 100000:
     nrsensi = 100000
 else:
@@ -55,6 +55,7 @@ with tf.GradientTape() as tape:
     trues = tf.Variable(train_y[:nrsensi], dtype=tf.float32)
     loss = tf.keras.losses.mean_squared_error(trues, preds)
     grads = tape.gradient(loss, inp)
+
 grads_sum = numpy.sum(numpy.abs(grads), axis=0)
 
 
@@ -62,3 +63,10 @@ grads_sum = numpy.sum(numpy.abs(grads), axis=0)
 f = open("sensi.dat","wb")
 f.write(grads_sum.astype("double"))
 f.close()
+
+# ... [rest of your code remains unchanged]
+
+# Get the predictions from the trained model for train_x
+y_hat = model.predict(train_x)
+
+print('y_hat',y_hat)

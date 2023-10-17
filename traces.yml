@@ -5,17 +5,19 @@
 ## tracelen: Number of sample points per trace
 ## peakdist: Minimum distance between consecutive peaks in the trace
 ## struct: File structure of your trace data
-FPGA_PRESENT_RANDOMIZED_CLOCK:
-  path: Traces/FPGA_PRESENT_RANDOMIZED_CLOCK
+
+# powerTraces_98:
+#   path: Traces/powerTraces_98
+#   nrfiles: 1
+#   tracesinfile: 2000
+#   tracelen: 25000
+#   peakdist: 42
+#   struct: "[('trace','i1',25000),('group','u1')]"
+
+powerTraces:
+  path: Traces/powerTraces
   nrfiles: 1
-  tracesinfile: 100000
-  tracelen: 5000
+  tracesinfile: 20000
+  tracelen: 8000
   peakdist: 42
-  struct: "[('trace','i1',5000),('group','u1')]"
-FPGA_PRESENT_TI_MISALIGNED:
-  path: Traces/FPGA_PRESENT_TI_MISALIGNED
-  nrfiles: 50
-  tracesinfile: 100000
-  tracelen: 5000
-  peakdist: 167
-  struct: "[('trace','i1',5000),('group','u1')]"
+  struct: "[('trace','float32',8000),('group','u1')]"

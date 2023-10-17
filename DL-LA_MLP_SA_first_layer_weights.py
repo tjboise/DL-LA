@@ -8,14 +8,14 @@ import logging
 
 
 # Specify the raw data set to be analyzed (e.g.)
-traceset = 'FPGA_PRESENT_RANDOMIZED_CLOCK'
+traceset = 'powerTraces'
 traceconfig = TraceConfig()
 tracelength = traceconfig.getnrpoints(traceset)
 
 
 # Define the training and validation parameters
-nrtrain = 5000
-nrval = 10000
+nrtrain = 4000
+nrval = 2000
 nrepochs = 50
 batchsize = 2000
 if nrtrain > 100000:
@@ -62,3 +62,4 @@ grads_sum = numpy.sum(numpy.abs(grads), axis=1)
 f = open("sensi.dat","wb")
 f.write(grads_sum.astype("double"))
 f.close()
+
