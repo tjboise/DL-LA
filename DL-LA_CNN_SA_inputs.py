@@ -8,19 +8,19 @@ import logging
 
 
 # Specify the raw data set to be analyzed (e.g.)
-traceset = 'FPGA_PRESENT_RANDOMIZED_CLOCK'
+traceset = 'Protected GIFT-COFB'
 traceconfig = TraceConfig()
 tracelength = traceconfig.getnrpoints(traceset)
 peakdist = traceconfig.getpeakdistance(traceset)
 
 
 # Define the training and validation parameters
-nrtrain = 5000
-nrval = 10000
-nrepochs = 50
-batchsize = 2000
+nrtrain = 1400
+nrval = 580
+nrepochs = 80
+batchsize = 256
 filter = 12
-kernel_mult = 2
+kernel_mult = 3
 strides = 2
 pool = 2
 if nrtrain > 100000:
@@ -37,10 +37,11 @@ train_x, train_y, val_x, val_y = traceconfig.prep_traces(traceset, nrtrain, nrva
 # Define the model, train the model and validate the model using the created data sets
 model = Sequential(
     [Reshape((tracelength,1), input_shape = (tracelength,)),
-    Conv1D(filters=filter, kernel_size=kernel_mult*peakdist, strides=peakdist//strides, input_shape=(tracelength,1), activation='relu'),
+    Conv1D(filters=filter, kernel_size=kernel_mult*peakdist,  input_shape=(tracelength,1), activation='relu'), #strides=peakdist//strides,
     MaxPooling1D(pool_size=pool),
     Flatten(),
     Dense(2, activation='sigmoid')])
+
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 out=model.fit(train_x, train_y, validation_data=(val_x, val_y), epochs=nrepochs, batch_size=batchsize, verbose=1)
 
@@ -49,6 +50,16 @@ out=model.fit(train_x, train_y, validation_data=(val_x, val_y), epochs=nrepochs,
 logging.basicConfig(filename='val_acc.log', format='%(message)s', level=logging.INFO)
 logging.info("val_accuracy: {}".format(out.history['val_accuracy']))
 
+# print(out.history.keys)
+import matplotlib.pyplot as plt
+plt.plot(out.history['accuracy'], label = 'accuracy')
+# plt.plot(out.history['loss'],label = 'loss')
+plt.plot(out.history['val_accuracy'],label = 'val_accuracy')
+plt.legend()
+# plt.yscale('log')
+# plt.xscale('log')
+# plt.plot(out.history['tra_accuracy'])
+plt.show()
 
 # Perform sensitivity analysis based on the training set
 inp = tf.Variable(train_x[:nrsensi], dtype=tf.float32)

@@ -28,9 +28,12 @@ class TraceConfig():
         onlytraces = data["trace"]
         net_x = numpy.empty([trperfile,tracelen], dtype="float32")
         net_y = numpy.empty([trperfile, 2], dtype="u1")
-        net_x = (onlytraces - m ) / s
+        # s = [x + 1e-5 for x in s]
+
+        net_x = (onlytraces - m) / s
+        print('net_x',net_x)
         net_y[:,0] = data["group"]
-        print('-------',net_y[:,0])
+
         net_y[:,1] = 1 - data["group"]
         return net_x, net_y
 
@@ -42,10 +45,10 @@ class TraceConfig():
         g[1] = sum(val_y[:,1] == 1)
         ovindex = 0 if g[0] > g[1] else 1
 
-        print('ovindex',ovindex)
+
         violations = (g[ovindex]-g[1-ovindex]) // 2
         valindex = len(val_x) - 1
-        print(valindex)
+
         bufindex = 0
         bufsize = len(buf_y)
         for _ in range(violations):
@@ -60,9 +63,11 @@ class TraceConfig():
                     break
 
             # bufindex = bufindex-1
+            print("val_x shape:", val_x.shape)
+            print("buf_x shape:", buf_x.shape)
+            print("valindex:", valindex)
+            print("bufindex:", bufindex)
 
-            print('valindex', valindex)
-            print('bufindex', bufindex)
             val_x[valindex] = buf_x[bufindex]
             val_y[valindex,0] = buf_y[bufindex,0]
             val_y[valindex,1] = buf_y[bufindex,1]
@@ -88,31 +93,31 @@ class TraceConfig():
         print("Preprocessing of ({},{}) traces from {}...".format(nrtrain,nrval,tset))
         trdata = self.traceinfo[tset]
         nrfiles = trdata["nrfiles"]
-        print('nrfiles',nrfiles)
+
         trperfile = trdata["tracesinfile"]
-        print('trperfile',trperfile)
+
         filelim = (nrtraces // trperfile) + 1
 
         assert filelim <= nrfiles
         for _ in range(4):
             if filelim + 1 <= nrfiles:
                 filelim += 1
-        print('filelim:', filelim)
+
         nrload = filelim * trperfile
         net_x = numpy.empty([nrload, self.getnrpoints(tset)], dtype="float32")
         net_y = numpy.empty([nrload, 2], dtype="u1")
-        print(net_y)
+
 
         for i in range(filelim):
             net_x[i*trperfile:(i+1)*trperfile], net_y[i*trperfile:(i+1)*trperfile] = self.get_normalized_from_file(tset, i)
-        print('net_x',net_x)
+
         train_x = net_x[:nrtrain]
         train_y = net_y[:nrtrain]
         val_x = net_x[nrtrain:nrtraces]
         val_y = net_y[nrtrain:nrtraces]
-        print('val_y',val_y)
+
         buf_x = net_x[nrtraces:]
-        print('buf_x',buf_x)
+
         buf_y = net_y[nrtraces:]
         print("Before balancing:")
         g0 = sum(val_y[:,0] == 1)

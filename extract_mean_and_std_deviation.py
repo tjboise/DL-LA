@@ -4,7 +4,7 @@ import numpy
 
 # List all names of the trace sets defined in "traces.yml" which should be analyzed
 # names = {"FPGA_PRESENT_RANDOMIZED_CLOCK": True, "FPGA_PRESENT_TI_MISALIGNED": True}
-names = {"powerTraces":True}
+names = {"Protected GIFT-COFB":True}
 
 # Open "traces.yml" and load the parameter definitions of the trace sets
 traceinfo = {}
