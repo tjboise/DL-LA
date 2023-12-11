@@ -4,7 +4,7 @@ DL-LA is a leakage assessment methodology based on deep learning. Simply put, a 
 
 ## Getting Started
 The simplest way of getting started is to download the side-channel traces linked above (and in the respective subfolders). However, you may also start right away with your own SCA data. In any case, just follow the steps below to get everything up and running:
-- Prepare your dataset:
+- Prepare your dataset: [demo dataset link](https://drive.google.com/drive/folders/1sN4kqiR-s2oeLNZ3v-_xwhu9oBhs_lp7?usp=sharing) 
 
 The data structure should be `struct: "[('trace','float32',8000),('group','u1')]"`. 
 If you don't have this kind of data directly, prepare the  **powerTraces_1.npy** and a **fvrchoicefile_20k.txt**), 
